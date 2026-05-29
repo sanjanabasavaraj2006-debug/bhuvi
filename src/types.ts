@@ -20,12 +20,57 @@ export interface NoteSection {
   formulaOrKeyTerms: string[];
 }
 
+export interface TopperConcept {
+  concept: string;
+  definition: string;
+  terminology: string;
+  glossary: string;
+}
+
+export interface TopperQuestion {
+  id: string;
+  markType: string; // "1 Mark" | "2 Marks" | "5 Marks" | "Long Answer" | "MCQ"
+  question: string;
+  answer: string;
+  options?: string[];
+  correctOption?: string;
+}
+
+export interface TopperNotesSection {
+  keyPoint: string;
+  shortcutTrick?: string;
+  formula?: string;
+  diagramExplanation?: string;
+  repeatedConcept?: string;
+}
+
+export interface TopperStudyBlock {
+  point: string;
+  memoryTrick: string;
+  explanation: string;
+  example: string;
+}
+
+export interface TopperMindMapItem {
+  id: string;
+  nodeName: string;
+  parentName?: string;
+  description?: string;
+}
+
 export interface NotesResponse {
   topic: string;
   introduction: string;
   sections: NoteSection[];
   quickSummary: string;
   studyTip: string;
+  // Topper Enhanced Fields
+  foundationalConcepts?: TopperConcept[];
+  examQuestions?: TopperQuestion[];
+  importantNotesSection?: TopperNotesSection[];
+  smartStudyBlocks?: TopperStudyBlock[];
+  keyTakeawaySummary?: string[];
+  mindMapTree?: TopperMindMapItem[];
   isFallback?: boolean;
   errorMessage?: string;
 }

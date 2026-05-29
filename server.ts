@@ -949,53 +949,144 @@ app.post("/api/notes", async (req, res) => {
 
   try {
     const ai = getGeminiAI();
-    const prompt = `Generate comprehensive, clear, high-scoring exam notes for the topic: "${topic}". 
-The notes should be highly student-focused, digestible, and exam-oriented. 
-Divide the concept into 2 to 3 main sections with sub-headings, list discrete bulleted key points for study, 
-detail any formulas or key terms critical to get right, write an engaging 3-sentence summary of the topic, 
-and formulate a clever "ExamTip" or study advice that points out a common student trap on this specific topic.`;
+    const prompt = `Generate comprehensive, exceptionally high-scoring, college-topper style handwritten notes for the topic: "${topic}".
+The notes should be highly student-focused, beautifully structured, and exam-oriented.
+
+You MUST generate:
+1. Quick Revision Summary: Short introduction and exam-focused explanation.
+2. Foundational Concepts: Key terminology, definitions, core concepts, and key glossary items.
+3. Important Exam Questions: Must include a 1 Mark Question, a 2 Mark Question, a 5 Mark Question, a Long Answer, and an MCQ (with four structured choices and correctOption marked).
+4. Important Notes Section: Bulleted key points, shortcut tricks, important formulas, diagram/flowchart explanations, and frequently repeated concepts.
+5. Smart Study Blocks: Memory tricks or mnemonics, simple explanations, and concrete real-world examples.
+6. Key Takeaway Summary: Bullet points list for last-minute exam preparation.
+7. Mind Map hierarchy tree: Parent-child connected node items describing the conceptual visual flowchart.`;
 
     const response = await withTimeout(
       ai.models.generateContent({
         model: "gemini-3.5-flash",
         contents: prompt,
         config: {
-          systemInstruction: "You are a professional university professor who writes outstanding, clear, simplified exam preparation notes for college and school students.",
+          systemInstruction: "You are an elite university professor and gold-medalist topper. You compile immaculate, highly structured visual study notes, shortcut memory tips, and exam-winning answer guidelines.",
           responseMimeType: "application/json",
           responseSchema: {
             type: Type.OBJECT,
             properties: {
               topic: { type: Type.STRING },
-              introduction: { type: Type.STRING, description: "Engaging 2-3 sentence overview introducing the topic and its academic relevance." },
+              introduction: { type: Type.STRING, description: "Engaging 2-3 sentence overview introducing the topic and academic relevance." },
               sections: {
                 type: Type.ARRAY,
                 items: {
                   type: Type.OBJECT,
                   properties: {
-                    subHeading: { type: Type.STRING, description: "Title of this note subheading" },
+                    subHeading: { type: Type.STRING },
                     keyPoints: {
                       type: Type.ARRAY,
-                      items: { type: Type.STRING },
-                      description: "Extracted high-value studying observations and bullet-points"
+                      items: { type: Type.STRING }
                     },
                     formulaOrKeyTerms: {
                       type: Type.ARRAY,
-                      items: { type: Type.STRING },
-                      description: "Formulas or key vocabulary terms associated with this sub section"
+                      items: { type: Type.STRING }
                     }
                   },
                   required: ["subHeading", "keyPoints", "formulaOrKeyTerms"]
                 }
               },
-              quickSummary: { type: Type.STRING, description: "Excellent final recap sentences summarizing the core takeaway." },
-              studyTip: { type: Type.STRING, description: "Exam tip detailing what the examiners often look for or common traps on this topic." }
+              quickSummary: { type: Type.STRING },
+              studyTip: { type: Type.STRING },
+              foundationalConcepts: {
+                type: Type.ARRAY,
+                items: {
+                  type: Type.OBJECT,
+                  properties: {
+                    concept: { type: Type.STRING },
+                    definition: { type: Type.STRING },
+                    terminology: { type: Type.STRING },
+                    glossary: { type: Type.STRING }
+                  },
+                  required: ["concept", "definition", "terminology", "glossary"]
+                }
+              },
+              examQuestions: {
+                type: Type.ARRAY,
+                items: {
+                  type: Type.OBJECT,
+                  properties: {
+                    id: { type: Type.STRING },
+                    markType: { type: Type.STRING },
+                    question: { type: Type.STRING },
+                    answer: { type: Type.STRING },
+                    options: {
+                      type: Type.ARRAY,
+                      items: { type: Type.STRING }
+                    },
+                    correctOption: { type: Type.STRING }
+                  },
+                  required: ["id", "markType", "question", "answer"]
+                }
+              },
+              importantNotesSection: {
+                type: Type.ARRAY,
+                items: {
+                  type: Type.OBJECT,
+                  properties: {
+                    keyPoint: { type: Type.STRING },
+                    shortcutTrick: { type: Type.STRING },
+                    formula: { type: Type.STRING },
+                    diagramExplanation: { type: Type.STRING },
+                    repeatedConcept: { type: Type.STRING }
+                  },
+                  required: ["keyPoint", "shortcutTrick", "formula", "diagramExplanation", "repeatedConcept"]
+                }
+              },
+              smartStudyBlocks: {
+                type: Type.ARRAY,
+                items: {
+                  type: Type.OBJECT,
+                  properties: {
+                    point: { type: Type.STRING },
+                    memoryTrick: { type: Type.STRING },
+                    explanation: { type: Type.STRING },
+                    example: { type: Type.STRING }
+                  },
+                  required: ["point", "memoryTrick", "explanation", "example"]
+                }
+              },
+              keyTakeawaySummary: {
+                type: Type.ARRAY,
+                items: { type: Type.STRING }
+              },
+              mindMapTree: {
+                type: Type.ARRAY,
+                items: {
+                  type: Type.OBJECT,
+                  properties: {
+                    id: { type: Type.STRING },
+                    nodeName: { type: Type.STRING },
+                    parentName: { type: Type.STRING },
+                    description: { type: Type.STRING }
+                  },
+                  required: ["id", "nodeName", "parentName", "description"]
+                }
+              }
             },
-            required: ["topic", "introduction", "sections", "quickSummary", "studyTip"]
+            required: [
+              "topic",
+              "introduction",
+              "sections",
+              "quickSummary",
+              "studyTip",
+              "foundationalConcepts",
+              "examQuestions",
+              "importantNotesSection",
+              "smartStudyBlocks",
+              "keyTakeawaySummary",
+              "mindMapTree"
+            ]
           }
         }
       }),
-      8005,
-      "Gemini compile notes"
+      14000,
+      "Gemini compile notes topper"
     );
 
     const data = JSON.parse(response.text?.trim() || "{}");
