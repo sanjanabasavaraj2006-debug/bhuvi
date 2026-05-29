@@ -63,4 +63,4 @@ export interface MindMapResponse {
   errorMessage?: string;
 }
 
-export type ActiveTab = "home" | "questions" | "notes" | "summarize" | "mindmap";
+export type ActiveTab = "home" | "questions" | "notes" | "summarize" | "mindmap" | "subjects";
