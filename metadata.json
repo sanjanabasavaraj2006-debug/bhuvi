@@ -1,0 +1,6 @@
+{
+  "name": "Student Study Assistant",
+  "description": "An exam-focused helper that creates important questions, summaries, notes, and connected text mind maps to help students revision easily.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
